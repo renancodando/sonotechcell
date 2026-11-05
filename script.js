@@ -2,25 +2,25 @@
 
 // Static site: contact and location work without a backend or database.
 const business = {
-  whatsapp: '5515981337498',
-  phone: '(15) 98133-7498',
-  address: 'Alameda das Dálias, 393, Casa 12, Jardim Simus, Sorocaba - SP, 18055-195, Brasil',
-  mapAddress: 'Alameda das Dálias, 393, Jardim Simus, Sorocaba - SP, 18055-195, Brasil',
+  whatsapp: '5519988714759',
+  phone: '(19) 98871-4759',
+  address: 'Av. Dr. Moraes Salles, 393, Conceição, Campinas - SP, 13010-000, Brasil',
+  mapAddress: 'Av. Dr. Moraes Salles, 393, Conceição, Campinas - SP, 13010-000, Brasil',
   timeZone: 'America/Sao_Paulo'
 };
 const mapsQuery = encodeURIComponent(business.mapAddress);
 document.querySelectorAll('[data-map-route]').forEach(link => {
   link.href = `https://www.google.com/maps/dir/?api=1&destination=${mapsQuery}`;
 });
-document.querySelector('.contact-number').href = `https://wa.me/${business.whatsapp}?text=${encodeURIComponent('Olá, SônoTechCell! Gostaria de informações sobre os serviços.')}`;
+document.querySelector('.contact-number').href = `https://wa.me/${business.whatsapp}?text=${encodeURIComponent('Olá, Mi Cell! Gostaria de informações sobre os serviços.')}`;
 
 function updateBusinessHours(now = new Date()) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
     timeZone: business.timeZone, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
   }).formatToParts(now).map(part => [part.type, part.value]));
   const minutes = Number(parts.hour) * 60 + Number(parts.minute);
-  const closing = parts.weekday === 'Sat' ? 12 * 60 : 18 * 60;
-  const open = parts.weekday !== 'Sun' && minutes >= 8 * 60 && minutes < closing;
+  const closing = parts.weekday === 'Sat' ? 15 * 60 : 18 * 60;
+  const open = parts.weekday !== 'Sun' && minutes >= 9 * 60 && minutes < closing;
   document.querySelectorAll('[data-business-status]').forEach(status => {
     status.classList.toggle('is-open', open);
     status.textContent = open ? `Dentro do horário de atendimento · até ${closing / 60}h` : 'Fora do horário de atendimento';
@@ -66,8 +66,8 @@ const services = {
   buttons: { title: 'Botões e sensores', icon: 'chip', description: 'Avaliação de botões, sensores e outros componentes que fazem parte da experiência de uso do seu celular.' }
 };
 const benefits = {
-  speed: { title: 'Reparo rápido', icon: 'bolt', description: 'Seu aparelho de volta no menor tempo. Após a avaliação, a equipe poderá informar as etapas do reparo e o prazo para o seu caso.' },
-  warranty: { title: 'Garantia', icon: 'shield', description: 'Segurança em cada serviço. Consulte com a equipe as condições de garantia aplicáveis ao reparo do seu aparelho.' },
+  speed: { title: 'Atendimento técnico', icon: 'bolt', description: 'Avaliação e orientação para seu aparelho. Após a avaliação, a equipe poderá informar as etapas do reparo e o prazo para o seu caso.' },
+  warranty: { title: 'Peças e reparos', icon: 'shield', description: 'Assistência técnica e distribuição de peças para celulares. Consulte a disponibilidade e as condições diretamente com a equipe.' },
   support: { title: 'Atendimento personalizado', icon: 'support', description: 'Suporte direto e ágil. Cada aparelho tem uma história e cada atendimento recebe atenção para entender o que você precisa.' }
 };
 
@@ -200,7 +200,7 @@ form.addEventListener('submit', event => {
   if (!form.reportValidity()) return;
   const data = Object.fromEntries([...new FormData(form)].map(([key, value]) => [key, value.trim()]));
   preparedMessage = [
-    'Olá, SônoTechCell! Gostaria de solicitar um diagnóstico.', '',
+    'Olá, Mi Cell! Gostaria de solicitar um diagnóstico.', '',
     `Nome: ${data.name}`, `Marca: ${data.brand}`, `Modelo: ${data.model}`,
     `Serviço: ${data.service || 'Preciso de uma avaliação'}`, '',
     `Problema: ${data.description}`, '',
@@ -214,7 +214,7 @@ form.addEventListener('submit', event => {
   feedback.querySelector('.manual-copy')?.remove();
   feedback.hidden = false;
   window.open(url, '_blank', 'noopener,noreferrer');
-  form.dispatchEvent(new CustomEvent('sonotech:diagnosis', { bubbles: true, detail: data }));
+  form.dispatchEvent(new CustomEvent('micell:diagnosis', { bubbles: true, detail: data }));
   feedback.scrollIntoView({ block: 'nearest', behavior: 'auto' });
 });
 form.addEventListener('input', event => {
