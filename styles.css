@@ -50,3 +50,39 @@
 @media(max-width:640px){.hero-art{left:auto;top:auto;width:420px;height:360px;margin:16px 0 6px calc((100% - 420px)/2);mask-image:linear-gradient(#000 0%,#000 88%,transparent 100%)}.hero-art .art-parallax{scale:1}.service-card:last-child{display:grid}.atmosphere:before{opacity:.5;background-size:180% 100%}.render-spark-one{top:58%}.render-spark-two{top:54%}}
 @media(max-width:380px){.hero-art{width:370px;height:320px;margin-left:calc((100% - 370px)/2)}}
 @media(prefers-reduced-motion:reduce){.hero-render,.render-spark{animation:none}}
+
+/* Contact tools work entirely in the browser. */
+.location-map{display:block;width:100%;height:195px;border:1px solid #ffffff25;border-radius:12px;background:#222226;margin:0 0 18px;color-scheme:light}
+.location-address{font-style:normal;line-height:1.55;font-size:15px;margin:0 0 18px}
+.utility-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.utility-actions .primary-button{flex:1;min-width:180px;width:auto;margin:0;font-size:13px;min-height:43px;padding:9px 15px}
+.utility-button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 14px;border:1px solid #ffffff32;border-radius:9px;background:#ffffff06;font-size:12px;font-weight:600;text-align:center;transition:background .2s,border-color .2s}
+.utility-button:hover{background:#f21c3215;border-color:#f21c3270}
+.copy-feedback{min-height:0;color:#e7c6cc;font-size:12px;line-height:1.5;margin:7px 0 0}
+.copy-feedback:empty{margin:0}
+.location-schedule{margin:21px 0 12px;padding-top:17px;border-top:1px solid #ffffff20;font-size:14px}
+.business-status{font-size:12px;color:#bdb5bd;line-height:1.5;display:flex;align-items:center;gap:8px;margin:8px 0}
+.business-status:before{content:'';flex-shrink:0;width:6px;height:6px;border-radius:50%;background:#8e878c}
+.business-status.is-open:before{background:#6bcb96;box-shadow:0 0 8px #6bcb9635}
+.business-status.is-open{color:#a9dfbe}
+.schedule-note{display:block;font-size:11px;line-height:1.5;color:#979199;margin:0 0 16px}
+.contact-actions{gap:8px;margin-top:17px}
+.contact-actions>*{flex:1;white-space:nowrap}
+.contact-hours{margin-bottom:8px}
+#contact-dialog>.primary-button{margin-top:19px}
+.form-note{font-size:12px;line-height:1.5;color:#a9a1ab;margin:16px 0 0}
+.form-feedback .message-status{margin:0 0 12px;line-height:1.6}
+.message-link{display:block;color:#fff;text-decoration:underline;text-underline-offset:4px;font-weight:600;font-size:13px;margin:0 0 14px}
+.message-link:hover{color:#ff6475}
+.manual-copy{font-size:12px;line-height:1.5;height:105px;margin-top:10px}
+.contact-faq{margin-top:26px;padding-top:20px;border-top:1px solid #ffffff20}
+.contact-faq h3{font-size:16px;letter-spacing:-.3px;margin:0 0 10px}
+.contact-faq details{border-bottom:1px solid #ffffff15;padding:12px 0}
+.contact-faq summary{font-size:13px;line-height:1.4;cursor:pointer;color:#e6e0e7;list-style:none;position:relative;padding-right:20px}
+.contact-faq summary::-webkit-details-marker{display:none}
+.contact-faq summary:after{content:'+';position:absolute;right:0;top:-2px;color:var(--red);font-size:19px}
+.contact-faq details[open] summary:after{content:'−'}
+.contact-faq summary:focus-visible{outline:2px solid #f21c32;outline-offset:5px;border-radius:2px}
+.contact-faq p{font-size:12px;line-height:1.6;color:#bcb5bf;margin:12px 0 0}
+.contact-strip .location-block small{white-space:normal;line-height:1.35}
+@media(max-width:640px){.location-map{height:180px}.utility-actions .primary-button{min-width:0;flex-basis:100%}.utility-actions>[data-copy=address]{width:100%}.contact-actions{gap:6px}.contact-actions .utility-button{font-size:11px;padding-left:8px;padding-right:8px}.contact-strip .location-block small{font-size:12px;line-height:1.5}.location-address{font-size:14px}}

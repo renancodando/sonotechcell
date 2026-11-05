@@ -1,6 +1,60 @@
 'use strict';
 
-// All interactions are local. Connect the diagnosis event to your own backend.
+// Static site: contact and location work without a backend or database.
+const business = {
+  whatsapp: '5515981337498',
+  phone: '(15) 98133-7498',
+  address: 'Alameda das Dálias, 393, Casa 12, Jardim Simus, Sorocaba - SP, 18055-195, Brasil',
+  mapAddress: 'Alameda das Dálias, 393, Jardim Simus, Sorocaba - SP, 18055-195, Brasil',
+  timeZone: 'America/Sao_Paulo'
+};
+const mapsQuery = encodeURIComponent(business.mapAddress);
+document.querySelectorAll('[data-map-route]').forEach(link => {
+  link.href = `https://www.google.com/maps/dir/?api=1&destination=${mapsQuery}`;
+});
+document.querySelector('.contact-number').href = `https://wa.me/${business.whatsapp}?text=${encodeURIComponent('Olá, SônoTechCell! Gostaria de informações sobre os serviços.')}`;
+
+function updateBusinessHours(now = new Date()) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
+    timeZone: business.timeZone, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+  }).formatToParts(now).map(part => [part.type, part.value]));
+  const minutes = Number(parts.hour) * 60 + Number(parts.minute);
+  const closing = parts.weekday === 'Sat' ? 12 * 60 : 18 * 60;
+  const open = parts.weekday !== 'Sun' && minutes >= 8 * 60 && minutes < closing;
+  document.querySelectorAll('[data-business-status]').forEach(status => {
+    status.classList.toggle('is-open', open);
+    status.textContent = open ? `Dentro do horário de atendimento · até ${closing / 60}h` : 'Fora do horário de atendimento';
+  });
+}
+updateBusinessHours();
+setInterval(updateBusinessHours, 60_000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) updateBusinessHours(); });
+
+async function copyText(text, scope) {
+  const feedback = scope.querySelector('[data-copy-feedback]');
+  try {
+    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text);
+    else throw new Error('Clipboard unavailable');
+    feedback.textContent = 'Copiado!';
+  } catch {
+    // A selectable fallback also works when clipboard permissions are denied.
+    const field = document.createElement('textarea');
+    field.className = 'manual-copy';
+    field.value = text;
+    field.readOnly = true;
+    field.setAttribute('aria-label', 'Texto para copiar manualmente');
+    scope.querySelector('.manual-copy')?.remove();
+    feedback.textContent = 'Selecione o texto abaixo e copie:';
+    feedback.after(field);
+    field.focus();
+    field.select();
+  }
+}
+document.querySelectorAll('[data-copy]').forEach(button => button.addEventListener('click', () => {
+  const text = button.dataset.copy === 'address' ? business.address : business.phone;
+  copyText(text, button.closest('dialog'));
+}));
+
 const services = {
   screen: { title: 'Troca de Tela', icon: 'screen', description: 'Tela quebrada, manchas ou toque que não responde? O cuidado com seu celular começa por uma avaliação do display e do touch.' },
   battery: { title: 'Troca de Bateria', icon: 'battery', description: 'Mais autonomia para o seu dia. Avaliamos a saúde da bateria e os sinais de desgaste para identificar o que seu aparelho precisa.' },
@@ -92,6 +146,11 @@ function showDetail(data, trigger, location = false) {
   document.querySelector('#detail-dialog .dialog-symbol use').setAttribute('href', '#i-' + data.icon);
   document.querySelector('#location-details').hidden = !location;
   document.querySelector('#detail-eyebrow').textContent = location ? 'ESTAMOS ESPERANDO POR VOCÊ' : 'ASSISTÊNCIA ESPECIALIZADA';
+  if (location) {
+    const map = document.querySelector('.location-map');
+    if (!map.hasAttribute('src')) map.src = `https://www.google.com/maps?q=${mapsQuery}&output=embed`;
+    updateBusinessHours();
+  }
   openDialog('detail-dialog', trigger);
 }
 document.querySelectorAll('[data-service]').forEach(button => {
@@ -105,7 +164,8 @@ document.querySelectorAll('[data-benefit]').forEach(button => button.addEventLis
   selectedService = '';
   showDetail(benefits[button.dataset.benefit], button);
 }));
-document.querySelectorAll('[data-open]').forEach(button => button.addEventListener('click', () => {
+document.querySelectorAll('[data-open]').forEach(button => button.addEventListener('click', event => {
+  event.preventDefault();
   const action = button.dataset.open;
   if (action === 'location') {
     selectedService = '';
@@ -128,26 +188,43 @@ allServices.addEventListener('click', () => {
   allServices.firstChild.textContent = expanded ? 'Mostrar menos' : 'Ver todos os serviços';
 });
 
-// Integration point: listen for `sonotech:diagnosis` and implement submission.
-// No requests, persistence or messages are sent by this front end.
+// WhatsApp handles delivery; no contact data is persisted by this site.
 const form = document.querySelector('#diagnosis-form');
+let preparedMessage = '';
 form.addEventListener('submit', event => {
   event.preventDefault();
-  const data = Object.fromEntries(new FormData(form));
+  // Reject whitespace-only fields as well as empty native required fields.
+  for (const field of form.querySelectorAll('input[required], textarea[required]')) {
+    field.setCustomValidity(field.value.trim() ? '' : 'Preencha este campo.');
+  }
+  if (!form.reportValidity()) return;
+  const data = Object.fromEntries([...new FormData(form)].map(([key, value]) => [key, value.trim()]));
+  preparedMessage = [
+    'Olá, SônoTechCell! Gostaria de solicitar um diagnóstico.', '',
+    `Nome: ${data.name}`, `Marca: ${data.brand}`, `Modelo: ${data.model}`,
+    `Serviço: ${data.service || 'Preciso de uma avaliação'}`, '',
+    `Problema: ${data.description}`, '',
+    'Podem me informar sobre o orçamento e o prazo de atendimento?'
+  ].join('\n');
+  const url = `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(preparedMessage)}`;
   const feedback = document.querySelector('.form-feedback');
-  feedback.replaceChildren();
-  const title = document.createElement('strong');
-  title.textContent = 'Informações conferidas.';
-  const text = document.createElement('p');
-  text.textContent = `${data.name.trim()} · ${data.brand} ${data.model.trim()} · ${data.service || 'Avaliação geral'}`;
-  const note = document.createElement('span');
-  note.textContent = 'Prévia do atendimento. Nenhuma solicitação foi enviada.';
-  feedback.append(title, text, note);
+  feedback.querySelector('.message-status').textContent = 'Mensagem preparada. Confirme o envio no WhatsApp. Se a conversa não abriu, use o link abaixo.';
+  feedback.querySelector('.message-link').href = url;
+  feedback.querySelector('[data-copy-feedback]').textContent = '';
+  feedback.querySelector('.manual-copy')?.remove();
   feedback.hidden = false;
+  window.open(url, '_blank', 'noopener,noreferrer');
   form.dispatchEvent(new CustomEvent('sonotech:diagnosis', { bubbles: true, detail: data }));
-  feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  feedback.scrollIntoView({ block: 'nearest', behavior: 'auto' });
 });
-form.addEventListener('input', () => { document.querySelector('.form-feedback').hidden = true; });
+form.addEventListener('input', event => {
+  event.target.setCustomValidity?.('');
+  document.querySelector('.form-feedback').hidden = true;
+});
+form.addEventListener('change', () => { document.querySelector('.form-feedback').hidden = true; });
+document.querySelector('#copy-message').addEventListener('click', () => {
+  if (preparedMessage) copyText(preparedMessage, document.querySelector('.form-feedback'));
+});
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = window.matchMedia('(pointer: fine)');
