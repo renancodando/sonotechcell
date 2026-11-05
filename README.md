@@ -15,7 +15,7 @@ Acesse `http://localhost:3000`.
 ## Interações
 
 - Menu responsivo, navegação por âncoras e destaque dos diferenciais.
-- Celular ilustrado em SVG, flutuação, anéis luminosos, partículas, parallax e iluminação dos cards ao mover o cursor.
+- Composição fotorealista recriada a partir da referência, com flutuação, anéis luminosos, partículas, parallax e iluminação dos cards ao mover o cursor.
 - Detalhes de cada serviço e diferencial em modais acessíveis; fechamento por Escape, botão ou fundo e restauração do foco.
 - Expansão de serviços adicionais e modal de localização.
 - Contato com link para o WhatsApp informado na referência.
@@ -35,4 +35,4 @@ document.addEventListener('sonotech:diagnosis', (event) => {
 
 Conteúdo dos serviços e diferenciais: `script.js`. Layout e animações: `styles.css`. Estrutura, telefone e endereço: `index.html`. Ilustração do celular e favicon: `assets/`.
 
-O telefone, endereço e horários reproduzem os dados da imagem de referência; revise os dados comerciais antes de divulgar. O celular é uma ilustração vetorial recriada para o projeto; não é um recorte da imagem original.
+O telefone, endereço e horários reproduzem os dados da imagem de referência; revise os dados comerciais antes de divulgar. O celular e os anéis são uma composição fotorealista recriada a partir da imagem de referência, em PNG com transparência.

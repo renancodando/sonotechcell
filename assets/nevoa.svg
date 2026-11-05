@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" preserveAspectRatio="none">
+  <defs>
+    <filter id="fog" x="-50%" y="-30%" width="200%" height="160%"><feTurbulence type="fractalNoise" baseFrequency=".014 .022" numOctaves="4" seed="7" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="85" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation="8"/></filter>
+    <linearGradient id="left"><stop stop-color="#e6e6e6" stop-opacity=".9"/><stop offset=".35" stop-color="#a2a2a2" stop-opacity=".35"/><stop offset="1" stop-color="#888" stop-opacity="0"/></linearGradient>
+    <linearGradient id="right"><stop stop-color="#888" stop-opacity="0"/><stop offset=".65" stop-color="#a2a2a2" stop-opacity=".35"/><stop offset="1" stop-color="#e6e6e6" stop-opacity=".9"/></linearGradient>
+  </defs>
+  <g filter="url(#fog)">
+    <path d="M-50-50H110L100 25 36 77 42 151 107 207 60 281 79 354 36 432 94 486 55 538 106 613 81 770H-50Z" fill="url(#left)"/>
+    <path d="M1330-50H1170L1180 25 1244 77 1238 151 1173 207 1220 281 1201 354 1244 432 1186 486 1225 538 1174 613 1199 770H1330Z" fill="url(#right)"/>
+    <path d="M-30 650 53 683 90 743H-30Zm1250-50-24 80-37 63h141V600Z" fill="#eee" opacity=".7"/>
+    <path d="m-20-20 87 9 23 27-87 22Zm1180-10 53 5 95 40-92 20Z" fill="#ccc" opacity=".6"/>
+  </g>
+</svg>
