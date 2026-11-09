@@ -86,3 +86,5 @@
 .contact-faq p{font-size:12px;line-height:1.6;color:#bcb5bf;margin:12px 0 0}
 .contact-strip .location-block small{white-space:normal;line-height:1.35}
 @media(max-width:640px){.location-map{height:180px}.utility-actions .primary-button{min-width:0;flex-basis:100%}.utility-actions>[data-copy=address]{width:100%}.contact-actions{gap:6px}.contact-actions .utility-button{font-size:11px;padding-left:8px;padding-right:8px}.contact-strip .location-block small{font-size:12px;line-height:1.5}.location-address{font-size:14px}}
+
+.service-disclaimer{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 16px;opacity:.85}

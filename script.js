@@ -2,24 +2,25 @@
 
 // Static site: contact and location work without a backend or database.
 const business = {
-  whatsapp: '5519988714759',
-  phone: '(19) 98871-4759',
-  address: 'Av. Dr. Moraes Salles, 393, Conceição, Campinas - SP, 13010-000, Brasil',
-  mapAddress: 'Av. Dr. Moraes Salles, 393, Conceição, Campinas - SP, 13010-000, Brasil',
+  name: 'CSCell',
+  whatsapp: '5531991303011',
+  phone: '(31) 99130-3011',
+  address: 'Rua José Alípio de Freitas, 319, Dea Marly, Ibirité - MG, 32412-093, Brasil',
+  mapAddress: 'Rua José Alípio de Freitas, 319, Dea Marly, Ibirité - MG, 32412-093, Brasil',
   timeZone: 'America/Sao_Paulo'
 };
 const mapsQuery = encodeURIComponent(business.mapAddress);
 document.querySelectorAll('[data-map-route]').forEach(link => {
   link.href = `https://www.google.com/maps/dir/?api=1&destination=${mapsQuery}`;
 });
-document.querySelector('.contact-number').href = `https://wa.me/${business.whatsapp}?text=${encodeURIComponent('Olá, Mi Cell! Gostaria de informações sobre os serviços.')}`;
+document.querySelector('.contact-number').href = `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(`Olá, ${business.name}! Gostaria de informações sobre os serviços.`)}`;
 
 function updateBusinessHours(now = new Date()) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
     timeZone: business.timeZone, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
   }).formatToParts(now).map(part => [part.type, part.value]));
   const minutes = Number(parts.hour) * 60 + Number(parts.minute);
-  const closing = parts.weekday === 'Sat' ? 15 * 60 : 18 * 60;
+  const closing = parts.weekday === 'Sat' ? 14 * 60 : 18 * 60;
   const open = parts.weekday !== 'Sun' && minutes >= 9 * 60 && minutes < closing;
   document.querySelectorAll('[data-business-status]').forEach(status => {
     status.classList.toggle('is-open', open);
@@ -67,7 +68,7 @@ const services = {
 };
 const benefits = {
   speed: { title: 'Atendimento técnico', icon: 'bolt', description: 'Avaliação e orientação para seu aparelho. Após a avaliação, a equipe poderá informar as etapas do reparo e o prazo para o seu caso.' },
-  warranty: { title: 'Peças e reparos', icon: 'shield', description: 'Assistência técnica e distribuição de peças para celulares. Consulte a disponibilidade e as condições diretamente com a equipe.' },
+  warranty: { title: 'Peças e reparos', icon: 'shield', description: 'Serviços de reparo e manutenção de celulares. Consulte a disponibilidade de peças e as condições diretamente com o Carlos.' },
   support: { title: 'Atendimento personalizado', icon: 'support', description: 'Suporte direto e ágil. Cada aparelho tem uma história e cada atendimento recebe atenção para entender o que você precisa.' }
 };
 
@@ -169,7 +170,7 @@ document.querySelectorAll('[data-open]').forEach(button => button.addEventListen
   const action = button.dataset.open;
   if (action === 'location') {
     selectedService = '';
-    showDetail({ title: 'Visite nossa loja', description: 'Tecnologia, confiança e um atendimento perto de você.', icon: 'pin' }, button, true);
+    showDetail({ title: 'Encontre a CSCell', description: 'Atendimento e assistência técnica de celulares em Ibirité, MG. Consulte os horários antes de sair.', icon: 'pin' }, button, true);
     return;
   }
   if (action === 'diagnosis') {
@@ -200,7 +201,7 @@ form.addEventListener('submit', event => {
   if (!form.reportValidity()) return;
   const data = Object.fromEntries([...new FormData(form)].map(([key, value]) => [key, value.trim()]));
   preparedMessage = [
-    'Olá, Mi Cell! Gostaria de solicitar um diagnóstico.', '',
+    `Olá, ${business.name}! Gostaria de solicitar um diagnóstico.`, '',
     `Nome: ${data.name}`, `Marca: ${data.brand}`, `Modelo: ${data.model}`,
     `Serviço: ${data.service || 'Preciso de uma avaliação'}`, '',
     `Problema: ${data.description}`, '',
@@ -214,7 +215,7 @@ form.addEventListener('submit', event => {
   feedback.querySelector('.manual-copy')?.remove();
   feedback.hidden = false;
   window.open(url, '_blank', 'noopener,noreferrer');
-  form.dispatchEvent(new CustomEvent('micell:diagnosis', { bubbles: true, detail: data }));
+  form.dispatchEvent(new CustomEvent('cscell:diagnosis', { bubbles: true, detail: data }));
   feedback.scrollIntoView({ block: 'nearest', behavior: 'auto' });
 });
 form.addEventListener('input', event => {
